@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Dropdown</title>
+    <style>body {
+        font-family: Arial, sans-serif;
+    }
+    
+    #dropdown-container {
+        margin: 20px;
+    }
+    
+    select {
+        margin: 10px 0;
+        padding: 5px;
+        font-size: 16px;
+    }
+    </style>
+</head>
+<body>
+    <div id="dropdown-container">
+        <select id="main-dropdown" onchange="handleMainDropdownChange(event)">
+            <option value="">Select Course Type</option>
+            <option value="ug">UG Courses</option>
+            <option value="pg">PG Courses</option>
+            <option value="pg-diploma">PG-Diploma Courses</option>
+        </select>
+        <div id="sub-dropdown-container"></div>
+    </div>
+
+    <script>const ugCourses = {
+        "B.A.": ["History", "Political Science", "Tamil", "B.Litt. (Tamil)", "English", "Economics", "Social Work", "Social Science", "Journalism & Mass Communication", "Public Administration", "Urdu"],
+        "B.Sc.": ["Physics", "Chemistry", "Botany", "Zoology", "Microbiology", "Hotel Management & Catering Science", "Tourism & Hospitality Management", "Computer Science", "Nutrition and Dietetics", "Environmental Science", "Visual Communication", "Psychology", "Yoga", "Mathematics"],
+        "B.Com.": ["Computer Application", "Information Technology", "B.Com."],
+        "B.Lit.": [],
+        "B.B.A.": ["B.B.A.", "Retail", "Computer Application"],
+        "B.C.A.": ["B.C.A.", "Lateral Entry", "Direct II Year"],
+        "B.L.I.Sc. (1 Year)": []
+    };
+    
+    const pgCourses = {
+        "M.A.": ["English Language and Linguistics", "Human Rights", "Women's Studies", "Journalism and Mass Communication", "Advertising and Public Relations", "Lateral Entry", "Social Work", "Other Subjects"],
+        "M.Com.": ["Finance", "Banking", "Co-operative Management", "Marketing", "Computer Application"],
+        "M.B.A.": ["Financial Management", "Marketing Management", "Human Resource Management", "Systems Management", "Retail Management", "International Business Management", "Tourism & Hotel Management", "Hospital Management", "Operations and Project Management", "Airline & Airport Management", "Logistic & Supply Chain Management"],
+        "M.Sc.": ["Mathematics", "Psychology", "Nutrition and Food Technology", "Physics", "Chemistry", "Electronics and Communication", "Botany", "Zoology", "Computer Science", "Hotel Management & Catering Science", "Tourism & Hospitality Management"],
+        "M.L.I.Sc. (1 Year)": []
+    };
+    
+    const pgDiplomaCourses = [
+        "Information and Communication Laws",
+        "Personnel Management and Industrial Relations",
+        "Actuarial Management",
+        "Industrial and Company Law",
+        "International Business Management",
+        "Indian Stock Market",
+        "Retail Management",
+        "Marketing Management",
+        "Financial Management",
+        "Systems Management",
+        "Human Resource Management",
+        "Operations and Project Management",
+        "Logistic Supply Chain Management",
+        "Computer Application (PGDCA)",
+        "Health Information Management",
+        "Radiography and Imaging Technology",
+        "Pharmaceutical Chemistry",
+        "Hospital Laboratory Technology",
+        "Hospital Documentation Management",
+        "Tourism Management",
+        "Hotel Management",
+        "Immuno Techniques",
+        "Environmental Health",
+        "Environmental Health & Hygiene",
+        "Environmental Molecular Diagnostics",
+        "Industrial Microbiology",
+        "Nutrition and Dietetics",
+        "Biostatistics",
+        "Multimedia Technology"
+    ];
+    
+    function handleMainDropdownChange(event) {
+        const value = event.target.value;
+        const subDropdownContainer = document.getElementById('sub-dropdown-container');
+        
+        // Clear any existing sub-dropdowns
+        subDropdownContainer.innerHTML = '';
+    
+        if (value === "ug") {
+            createSubDropdown(ugCourses, 'ug-sub-dropdown', subDropdownContainer);
+        } else if (value === "pg") {
+            createSubDropdown(pgCourses, 'pg-sub-dropdown', subDropdownContainer);
+        } else if (value === "pg-diploma") {
+            createSubDropdown({ "Pg diploma": pgDiplomaCourses }, 'pg-diploma-sub-dropdown', subDropdownContainer);
+        }
+    }
+    
+    function createSubDropdown(courses, dropdownId, container) {
+        const subDropdown = document.createElement('select');
+        subDropdown.id = dropdownId;
+        subDropdown.onchange = (e) => handleSubDropdownChange(e, courses);
+    
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "";
+        defaultOption.text = "Select Course";
+        subDropdown.appendChild(defaultOption);
+    
+        for (const [key, value] of Object.entries(courses)) {
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.text = key;
+            subDropdown.appendChild(opt);
+        }
+    
+        container.appendChild(subDropdown);
+    }
+    
+    function handleSubDropdownChange(event, courses) {
+        const value = event.target.value;
+        const subDropdownContainer = event.target.parentNode;
+        
+        // Remove any existing sub-options dropdowns
+        const existingSubOptionsDropdown = document.getElementById('sub-options-dropdown');
+        if (existingSubOptionsDropdown) {
+            subDropdownContainer.removeChild(existingSubOptionsDropdown);
+        }
+    
+        if (courses[value] && courses[value].length > 0) {
+            const subOptionsDropdown = document.createElement('select');
+            subOptionsDropdown.id = 'sub-options-dropdown';
+    
+            const defaultOption = document.createElement('option');
+            defaultOption.value = "";
+            defaultOption.text = "Select Sub Option";
+            subOptionsDropdown.appendChild(defaultOption);
+    
+            courses[value].forEach(subOption => {
+                const opt = document.createElement('option');
+                opt.value = subOption;
+                opt.text = subOption;
+                subOptionsDropdown.appendChild(opt);
+            });
+    
+            subDropdownContainer.appendChild(subOptionsDropdown);
+        }
+    }
+    
+    </script>
+</body>
+</html>
